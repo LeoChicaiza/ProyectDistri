@@ -90,16 +90,16 @@ jobs:
             sudo docker stop license-service || true
             sudo docker rm license-service || true
 
-            # Limpiar imágenes no utilizadas
+            # Limpiar imagenes no utilizadas
             sudo docker system prune -f
 
-            # Pull de las nuevas imágenes
+            # Pull de las nuevas imagenes
             sudo docker pull leochicaiza/control-service:latest
             sudo docker pull leochicaiza/exit-service:latest
             sudo docker pull leochicaiza/entry-service:latest
             sudo docker pull leochicaiza/license-service:latest
 
-            # Iniciar contenedores con puertos específicos
+            # Iniciar contenedores con puertos especificos
             sudo docker run -d \
               --name control-service \
               -p 8020:8020 \
