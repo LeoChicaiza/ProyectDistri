@@ -1,18 +1,29 @@
-use warp::Filter;
+mod handlers;
+mod kafka;
+
+use axum::{routing::get, Router};
 use dotenv::dotenv;
 use std::env;
-
-mod ws;
+use std::net::SocketAddr;
 
 #[tokio::main]
 async fn main() {
     dotenv().ok();
-    let port: u16 = env::var("PORT").unwrap_or_else(|_| "8026".to_string()).parse().unwrap();
+    env_logger::init();
 
-    let ws_route = warp::path("ws")
-        .and(warp::ws())
-        .map(|ws: warp::ws::Ws| ws.on_upgrade(ws::handle_connection));
+    let kafka_task = tokio::spawn(kafka::consume_events());
 
-    println!("🚀 Notification WebSocket running on port {}", port);
-    warp::serve(ws_route).run(([0, 0, 0, 0], port)).await;
+    let app = Router::new().route("/ws", get(handlers::ws_handler));
+
+    let port = env::var("PORT").unwrap_or_else(|_| "8026".to_string());
+    let addr = format!("0.0.0.0:{}", port).parse::<SocketAddr>().unwrap();
+    println!("✅ Listening on {}", addr);
+
+    axum::Server::bind(&addr)
+        .serve(app.into_make_service())
+        .await
+        .unwrap();
+
+    kafka_task.await.unwrap();
 }
+

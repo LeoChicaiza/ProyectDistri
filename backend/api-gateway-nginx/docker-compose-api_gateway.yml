@@ -1,0 +1,81 @@
+version: '3.8'
+
+services:
+  api-gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: api-gateway
+    ports:
+      - "8000:8000"
+    depends_on:
+      - auth-service
+      - notification-service
+      - reporting-service
+      - confirmation-service
+      - billing-service
+      - vehicle-registration-service
+      - availability-service
+      - entry-service
+    networks:
+      - micro_net
+
+  auth-service:
+    image: leochicaiza/auth-service:latest
+    ports:
+      - "8001:8001"
+    networks:
+      - micro_net
+
+  notification-service:
+    image: leochicaiza/notification-service:latest
+    ports:
+      - "8027:8027"
+    networks:
+      - micro_net
+
+  reporting-service:
+    image: leochicaiza/reporting-service:latest
+    ports:
+      - "8029:8029"
+    networks:
+      - micro_net
+
+  confirmation-service:
+    image: leochicaiza/confirmation-service:latest
+    ports:
+      - "8030:8030"
+    networks:
+      - micro_net
+
+  billing-service:
+    image: leochicaiza/billing-service:latest
+    ports:
+      - "8021:8021"
+    networks:
+      - micro_net
+
+  vehicle-registration-service:
+    image: leochicaiza/vehicle-registration-service:latest
+    ports:
+      - "8012:8012"
+    networks:
+      - micro_net
+
+  availability-service:
+    image: leochicaiza/availability-service:latest
+    ports:
+      - "8020:8020"
+    networks:
+      - micro_net
+
+  entry-service:
+    image: leochicaiza/entry-service:latest
+    ports:
+      - "8018:8018"
+    networks:
+      - micro_net
+
+networks:
+  micro_net:
+    driver: bridge

@@ -1,0 +1,104 @@
+name: Deploy Entry-Exit Microservices to EC2
+
+on:
+  push:
+    branches:
+      - ramaQA
+
+jobs:
+  build_and_push_images:
+    name: Build and Push Docker Images
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push notification-service-ws
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend/Notifications/notification-service-ws
+          file: ./backend/Notifications/notification-service-ws/Dockerfile
+          push: true
+          tags: leochicaiza/notification-service-ws:latest
+
+      
+
+  deploy_to_ec2:
+    name: Deploy Docker Containers to EC2
+    runs-on: ubuntu-latest
+    needs: build_and_push_images
+    steps:
+      - name: Set up SSH key
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.EC2_KEY }}
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.EC2_HOST8 }}
+          username: ec2-user
+          key: ${{ secrets.EC2_KEY }}
+          port: 22
+          script: |
+
+            # Instalar Docker si no existe
+            if ! command -v docker &>/dev/null; then
+              echo "Instalando Docker..."
+
+              if command -v apt-get &>/dev/null; then
+                # Ubuntu / Debian
+                sudo apt-get update -y
+                sudo apt-get install -y docker.io
+                sudo systemctl enable --now docker
+
+              elif command -v dnf &>/dev/null; then
+                # Amazon Linux 2023 / RHEL 9 / Fedora
+                sudo dnf install -y docker
+                sudo systemctl enable --now docker
+
+              elif command -v yum &>/dev/null; then
+                # Amazon Linux 2 / RHEL 7-8 / CentOS
+                sudo yum install -y docker
+                sudo systemctl enable --now docker    # ó: sudo service docker start
+
+              else
+                echo "❌ No se pudo detectar un gestor de paquetes compatible."
+                exit 1
+              fi
+
+              sudo usermod -aG docker ec2-user
+            fi
+
+            # Parar y eliminar contenedores anteriores
+            sudo docker stop notification-service-ws || true
+            sudo docker rm notification-service-ws || true
+           
+
+            # Limpiar imagenes no utilizadas
+            sudo docker system prune -f
+
+            # Pull de las nuevas imagenes
+            sudo docker pull leochicaiza/notification-service-ws:latest
+        
+            # Iniciar contenedores con puertos especificos
+            sudo docker run -d \
+              --name notification-service-ws \
+              -p 8026:8026 \
+              leochicaiza/notification-service-ws:latest
+
+            
+
+            # Verificar estado de los contenedores
+            sudo docker ps -a
+
+
