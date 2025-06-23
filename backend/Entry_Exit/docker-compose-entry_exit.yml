@@ -1,0 +1,68 @@
+services:
+  redis:
+    image: redis:7.2-alpine
+    container_name: entry_exit_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: always
+
+  license-plate-recognition-service:
+    build:
+      context: ./license-service
+      dockerfile: Dockerfile
+    container_name: license-service
+    ports:
+      - "8017:8017"
+    depends_on:
+      - redis
+    environment:
+      - REDIS_HOST=entry_exit_redis
+      - REDIS_PORT=6379
+    restart: always
+
+  entry-service:
+    build:
+      context: ./entry-service
+      dockerfile: Dockerfile
+    container_name: entry-service
+    ports:
+      - "8018:8018"
+    depends_on:
+      - redis
+    environment:
+      - REDIS_HOST=entry_exit_redis
+      - REDIS_PORT=6379
+    restart: always
+
+  exit-service:
+    build:
+      context: ./exit-service
+      dockerfile: Dockerfile
+    container_name: exit-service
+    ports:
+      - "8019:8019"
+    depends_on:
+      - redis
+    environment:
+      - REDIS_HOST=entry_exit_redis
+      - REDIS_PORT=6379
+    restart: always
+
+  control-service:
+    build:
+      context: ./control-service
+      dockerfile: Dockerfile
+    container_name: control-service
+    ports:
+      - "8016:8016"
+    depends_on:
+      - redis
+    environment:
+      - REDIS_HOST=entry_exit_redis
+      - REDIS_PORT=6379
+    restart: always
+
+volumes:
+  redis_data:

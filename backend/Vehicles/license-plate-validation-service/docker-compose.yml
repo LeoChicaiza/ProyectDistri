@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  license-plate-validation-service:
+    build: .
+    ports:
+      - "5013:5013"
+    environment:
+      - NODE_ENV=development

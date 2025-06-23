@@ -1,0 +1,78 @@
+version: "3.8"
+
+services:
+  vehicles-db:
+    image: postgres:15
+    container_name: vehicles-db
+    restart: always
+    environment:
+      POSTGRES_DB: vehicles_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 12345
+    ports:
+      - "5433:5432"
+    volumes:
+      - vehicles_db_data:/var/lib/postgresql/data
+    networks:
+      - vehicles-net
+
+  license-plate-validation:
+    build:
+      context: ./license-plate-validation-service
+      dockerfile: Dockerfile
+    container_name: license-plate-validation
+    depends_on:
+      - vehicles-db
+    environment:
+      DB_NAME: vehicles_db
+      DB_USER: postgres
+      DB_PASSWORD: 12345
+      DB_HOST: vehicles-db
+      DB_PORT: 5432
+    ports:
+      - "8010:8010"
+    networks:
+      - vehicles-net
+
+  vehicle-history:
+    build:
+      context: ./vehicle-history-service
+      dockerfile: Dockerfile
+    container_name: vehicle-history
+    depends_on:
+      - vehicles-db
+    environment:
+      DB_NAME: vehicles_db
+      DB_USER: postgres
+      DB_PASSWORD: 12345
+      DB_HOST: vehicles-db
+      DB_PORT: 5432
+    ports:
+      - "8011:8011"
+    networks:
+      - vehicles-net
+
+  vehicle-registration:
+    build:
+      context: ./vehicle-registration-service
+      dockerfile: Dockerfile
+    container_name: vehicle-registration
+    depends_on:
+      - vehicles-db
+    environment:
+      DB_NAME: vehicles_db
+      DB_USER: postgres
+      DB_PASSWORD: 12345
+      DB_HOST: vehicles-db
+      DB_PORT: 5432
+    ports:
+      - "8012:8012"
+    networks:
+      - vehicles-net
+
+volumes:
+  vehicles_db_data:
+
+networks:
+  vehicles-net:
+

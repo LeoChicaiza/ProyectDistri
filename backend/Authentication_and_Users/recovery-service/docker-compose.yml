@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  recovery-service:
+    build: .
+    ports:
+      - "5001:5001"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/recovery-db
+      - JWT_SECRET=mysecret
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"

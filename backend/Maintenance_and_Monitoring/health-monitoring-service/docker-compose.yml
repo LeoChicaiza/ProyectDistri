@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  health-monitoring-service:
+    build: .
+    ports:
+      - "5030:5030"
+    environment:
+      - NODE_ENV=production

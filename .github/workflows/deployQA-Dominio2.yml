@@ -1,0 +1,133 @@
+name: Deploy Microservices to EC2
+
+on:
+  push:
+    branches:
+      - ramaQA
+
+jobs:
+  build_and_push_images:
+    name: Build and Push Docker Images
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push availability-service
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend/Parking_Management/availability-service
+          file: ./backend/Parking_Management/availability-service/Dockerfile
+          push: true
+          tags: leochicaiza/availability-service:latest
+
+      - name: Build and push levels-floors-service
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend/Parking_Management/levels-floors-service
+          file: ./backend/Parking_Management/levels-floors-service/Dockerfile
+          push: true
+          tags: leochicaiza/levels-floors-service:latest
+
+      - name: Build and push parking-lot-creation-service
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend/Parking_Management/parking-lot-creation-service
+          file: ./backend/Parking_Management/parking-lot-creation-service/Dockerfile
+          push: true
+          tags: leochicaiza/parking-lot-creation-service:latest
+
+      - name: Build and push parking-slots-service
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend/Parking_Management/parking-slots-service
+          file: ./backend/Parking_Management/parking-slots-service/Dockerfile
+          push: true
+          tags: leochicaiza/parking-slots-service:latest
+
+      - name: Build and push slot-maintenance-service
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend/Parking_Management/slot-maintenance-service
+          file: ./backend/Parking_Management/slot-maintenance-service/Dockerfile
+          push: true
+          tags: leochicaiza/slot-maintenance-service:latest
+
+      - name: Build and push zones-service
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend/Parking_Management/zones-service
+          file: ./backend/Parking_Management/zones-service/Dockerfile
+          push: true
+          tags: leochicaiza/zones-service:latest
+
+  deploy_to_ec2:
+    name: Deploy Docker Containers to EC2
+    runs-on: ubuntu-latest
+    needs: build_and_push_images
+    steps:
+      - name: Set up SSH key
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.EC2_KEY }}
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.EC2_HOST2 }}
+          username: ec2-user
+          key: ${{ secrets.EC2_KEY }}
+          port: 22
+          script: |
+            # Instalar Docker si no existe
+            if ! command -v docker &> /dev/null; then
+              sudo yum update -y
+              sudo amazon-linux-extras install docker -y
+              sudo service docker start
+              sudo usermod -a -G docker ec2-user
+            fi
+
+            # Parar y eliminar contenedores anteriores
+            sudo docker stop availability-service || true
+            sudo docker rm availability-service || true
+            sudo docker stop levels-floors-service || true
+            sudo docker rm levels-floors-service || true
+            sudo docker stop parking-lot-creation-service || true
+            sudo docker rm parking-lot-creation-service || true
+
+            sudo docker stop parking-slots-service || true
+            sudo docker rm parking-slots-service || true
+            sudo docker stop slot-maintenance-service || true
+            sudo docker rm slot-maintenance-service || true
+            sudo docker stop zones-service || true
+            sudo docker rm zones-service || true
+
+
+            # Limpiar imágenes
+            sudo docker system prune -f
+
+            # Pull e iniciar nuevos contenedores
+            sudo docker pull leochicaiza/availability-service:latest
+            sudo docker pull leochicaiza/levels-floors-service:latest
+            sudo docker pull leochicaiza/parking-lot-creation-service:latest
+
+            sudo docker pull leochicaiza/parking-slots-service:latest
+            sudo docker pull leochicaiza/slot-maintenance-service:latest
+            sudo docker pull leochicaiza/zones-service:latest
+
+            sudo docker run -d --name availability-service -p 8007:8007 leochicaiza/availability-service:latest
+            sudo docker run -d --name levels-floors-service -p 8008:8008 leochicaiza/levels-floors-service:latest
+            sudo docker run -d --name parking-lot-creation-service -p 8009:8009 leochicaiza/parking-lot-creation-service:latest
+
+            sudo docker run -d --name parking-slots-service -p 8010:8010 leochicaiza/parking-slots-service:latest
+            sudo docker run -d --name slot-maintenance-service -p 8011:8011 leochicaiza/slot-maintenance-service:latest
+            sudo docker run -d --name zones-service -p 8012:8012 leochicaiza/zones-service:latest

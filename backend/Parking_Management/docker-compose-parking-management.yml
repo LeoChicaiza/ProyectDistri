@@ -1,0 +1,131 @@
+version: "3.8"
+
+services:
+  parking-db:
+    image: postgres:15
+    container_name: parking-management-db
+    restart: always
+    environment:
+      POSTGRES_DB: parking_management_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 12345
+    ports:
+      - "5434:5432"
+    volumes:
+      - parking_db_data:/var/lib/postgresql/data
+    networks:
+      - parking-net
+
+  availability-service:
+    build:
+      context: ./availability-service
+      dockerfile: Dockerfile
+    container_name: availability-service
+    depends_on:
+      - parking-db
+    environment:
+      DB_NAME: parking_management_db
+      DB_USER: postgres
+      DB_PASSWORD: 12345
+      DB_HOST: parking-db
+      DB_PORT: 5432
+    ports:
+      - "8020:8020"
+    networks:
+      - parking-net
+
+  levels-floors-service:
+    build:
+      context: ./levels-floors-service
+      dockerfile: Dockerfile
+    container_name: levels-floors-service
+    depends_on:
+      - parking-db
+    environment:
+      DB_NAME: parking_management_db
+      DB_USER: postgres
+      DB_PASSWORD: 12345
+      DB_HOST: parking-db
+      DB_PORT: 5432
+    ports:
+      - "8021:8021"
+    networks:
+      - parking-net
+
+  parking-lot-creation-service:
+    build:
+      context: ./parking-lot-creation-service
+      dockerfile: Dockerfile
+    container_name: parking-lot-creation-service
+    depends_on:
+      - parking-db
+    environment:
+      DB_NAME: parking_management_db
+      DB_USER: postgres
+      DB_PASSWORD: 12345
+      DB_HOST: parking-db
+      DB_PORT: 5432
+    ports:
+      - "8022:8022"
+    networks:
+      - parking-net
+
+  parking-slots-service:
+    build:
+      context: ./parking-slots-service
+      dockerfile: Dockerfile
+    container_name: parking-slots-service
+    depends_on:
+      - parking-db
+    environment:
+      DB_NAME: parking_management_db
+      DB_USER: postgres
+      DB_PASSWORD: 12345
+      DB_HOST: parking-db
+      DB_PORT: 5432
+    ports:
+      - "8023:8023"
+    networks:
+      - parking-net
+
+  slot-maintenance-service:
+    build:
+      context: ./slot-maintenance-service
+      dockerfile: Dockerfile
+    container_name: slot-maintenance-service
+    depends_on:
+      - parking-db
+    environment:
+      DB_NAME: parking_management_db
+      DB_USER: postgres
+      DB_PASSWORD: 12345
+      DB_HOST: parking-db
+      DB_PORT: 5432
+    ports:
+      - "8024:8024"
+    networks:
+      - parking-net
+
+  zones-service:
+    build:
+      context: ./zones-service
+      dockerfile: Dockerfile
+    container_name: zones-service
+    depends_on:
+      - parking-db
+    environment:
+      DB_NAME: parking_management_db
+      DB_USER: postgres
+      DB_PASSWORD: 12345
+      DB_HOST: parking-db
+      DB_PORT: 5432
+    ports:
+      - "8025:8025"
+    networks:
+      - parking-net
+
+volumes:
+  parking_db_data:
+
+networks:
+  parking-net:

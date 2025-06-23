@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  levels-floors-service:
+    build: .
+    ports:
+      - "5007:5007"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/levels-db
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"

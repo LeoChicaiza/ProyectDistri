@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  access-control-service:
+    build: .
+    ports:
+      - "5002:5002"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/access-db
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"

@@ -1,0 +1,114 @@
+
+version: '3.9'
+
+services:
+  auth_users_db:
+    image: postgres:14
+    container_name: auth_users_db
+    environment:
+      POSTGRES_DB: auth_and_users_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 12345
+    ports:
+      - "5432:5432"
+    volumes:
+      - auth_users_data:/var/lib/postgresql/data
+    networks:
+      - auth_net
+
+  access-control-service:
+    image: leochicaiza/access-control-service:latest
+    depends_on:
+      - auth_users_db
+    environment:
+      DB_HOST: auth_users_db
+      DB_NAME: auth_and_users_db
+      DB_USER: postgres
+      DB_PASSWORD: 12345
+      DB_PORT: 5432
+    ports:
+      - "8002:8002"
+    networks:
+      - auth_net
+
+  active-sessions-service:
+    image: leochicaiza/active-sessions-service:latest
+    depends_on:
+      - auth_users_db
+    environment:
+      DB_HOST: auth_users_db
+      DB_NAME: auth_and_users_db
+      DB_USER: postgres
+      DB_PASSWORD: 12345
+      DB_PORT: 5432
+    ports:
+      - "8003:8003"
+    networks:
+      - auth_net
+
+  auth-service:
+    image: leochicaiza/auth-service:latest
+    depends_on:
+      - auth_users_db
+    environment:
+      DB_HOST: auth_users_db
+      DB_NAME: auth_and_users_db
+      DB_USER: postgres
+      DB_PASSWORD: 12345
+      DB_PORT: 5432
+    ports:
+      - "8001:8001"
+    networks:
+      - auth_net
+
+  login-audit-service:
+    image: leochicaiza/login-audit-service:latest
+    depends_on:
+      - auth_users_db
+    environment:
+      DB_HOST: auth_users_db
+      DB_NAME: auth_and_users_db
+      DB_USER: postgres
+      DB_PASSWORD: 12345
+      DB_PORT: 5432
+    ports:
+      - "5000:5000"
+    networks:
+      - auth_net
+
+  recovery-service:
+    image: leochicaiza/recovery-service:latest
+    depends_on:
+      - auth_users_db
+    environment:
+      DB_HOST: auth_users_db
+      DB_NAME: auth_and_users_db
+      DB_USER: postgres
+      DB_PASSWORD: 12345
+      DB_PORT: 5432
+    ports:
+      - "8005:8005"
+    networks:
+      - auth_net
+
+  user-management-service:
+    image: leochicaiza/user-management-service:latest
+    depends_on:
+      - auth_users_db
+    environment:
+      DB_HOST: auth_users_db
+      DB_NAME: auth_and_users_db
+      DB_USER: postgres
+      DB_PASSWORD: 12345
+      DB_PORT: 5432
+    ports:
+      - "8006:8006"
+    networks:
+      - auth_net
+
+volumes:
+  auth_users_data:
+
+networks:
+  auth_net:
+    driver: bridge

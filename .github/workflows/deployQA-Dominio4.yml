@@ -1,0 +1,126 @@
+name: Deploy Entry-Exit Microservices to EC2
+
+on:
+  push:
+    branches:
+      - ramaQA
+
+jobs:
+  build_and_push_images:
+    name: Build and Push Docker Images
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push control-service
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend/Entry_Exit/control-service
+          file: ./backend/Entry_Exit/control-service/Dockerfile
+          push: true
+          tags: leochicaiza/control-service:latest
+
+      - name: Build and push exit-service
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend/Entry_Exit/exit-service
+          file: ./backend/Entry_Exit/exit-service/Dockerfile
+          push: true
+          tags: leochicaiza/exit-service:latest
+
+      - name: Build and push entry-service
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend/Entry_Exit/entry-service
+          file: ./backend/Entry_Exit/entry-service/Dockerfile
+          push: true
+          tags: leochicaiza/entry-service:latest
+
+      - name: Build and push license-service
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend/Entry_Exit/license-service
+          file: ./backend/Entry_Exit/license-service/Dockerfile
+          push: true
+          tags: leochicaiza/license-service:latest
+
+  deploy_to_ec2:
+    name: Deploy Docker Containers to EC2
+    runs-on: ubuntu-latest
+    needs: build_and_push_images
+    steps:
+      - name: Set up SSH key
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.EC2_KEY }}
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.EC2_HOST4 }}
+          username: ec2-user
+          key: ${{ secrets.EC2_KEY }}
+          port: 22
+          script: |
+            # Instalar Docker si no existe
+            if ! command -v docker &> /dev/null; then
+              sudo yum update -y
+              sudo amazon-linux-extras install docker -y
+              sudo service docker start
+              sudo usermod -a -G docker ec2-user
+            fi
+
+            # Parar y eliminar contenedores anteriores
+            sudo docker stop control-service || true
+            sudo docker rm control-service || true
+            sudo docker stop exit-service || true
+            sudo docker rm exit-service || true
+            sudo docker stop entry-service || true
+            sudo docker rm entry-service || true
+            sudo docker stop license-service || true
+            sudo docker rm license-service || true
+
+            # Limpiar imágenes no utilizadas
+            sudo docker system prune -f
+
+            # Pull de las nuevas imágenes
+            sudo docker pull leochicaiza/control-service:latest
+            sudo docker pull leochicaiza/exit-service:latest
+            sudo docker pull leochicaiza/entry-service:latest
+            sudo docker pull leochicaiza/license-service:latest
+
+            # Iniciar contenedores con puertos específicos
+            sudo docker run -d \
+              --name control-service \
+              -p 8020:8020 \
+              leochicaiza/control-service:latest
+
+            sudo docker run -d \
+              --name exit-service \
+              -p 8019:8019 \
+              leochicaiza/exit-service:latest
+
+            sudo docker run -d \
+              --name entry-service \
+              -p 8018:8018 \
+              leochicaiza/entry-service:latest
+
+            sudo docker run -d \
+              --name license-service \
+              -p 8017:8017 \
+              leochicaiza/license-service:latest
+
+            # Verificar estado de los contenedores
+            sudo docker ps -a
+
+

@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  parking-lot-creation-service:
+    build: .
+    ports:
+      - "5006:5006"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/parkinglots-db
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"

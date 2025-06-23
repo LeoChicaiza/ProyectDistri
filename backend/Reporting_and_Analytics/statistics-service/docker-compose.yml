@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  statistics-service:
+    build: .
+    ports:
+      - "5028:5028"
+    environment:
+      - NODE_ENV=production

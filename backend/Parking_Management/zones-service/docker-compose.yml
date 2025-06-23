@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  zones-service:
+    build: .
+    ports:
+      - "5008:5008"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/zones-db
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"

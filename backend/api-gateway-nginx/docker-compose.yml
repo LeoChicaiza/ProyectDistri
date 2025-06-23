@@ -1,0 +1,39 @@
+
+version: '3.8'
+
+services:
+  api-gateway:
+    build: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      - auth-service
+      - notification-service
+      - reporting-service
+      - confirmation-service
+      - billing-service
+
+  auth-service:
+    image: auth-service:latest
+    ports:
+      - "8001:8001"
+
+  notification-service:
+    image: notification-service:latest
+    ports:
+      - "8027:8027"
+
+  reporting-service:
+    image: reporting-service:latest
+    ports:
+      - "8029:8029"
+
+  confirmation-service:
+    image: confirmation-service:latest
+    ports:
+      - "8030:8030"
+
+  billing-service:
+    image: billing-service:latest
+    ports:
+      - "8021:8021"

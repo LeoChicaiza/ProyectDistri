@@ -1,0 +1,13 @@
+{
+  "name": "license-plate-recognition-service",
+  "version": "1.0.0",
+  "description": "Microservice for recognizing vehicle license plates using OCR",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2"
+  }
+}

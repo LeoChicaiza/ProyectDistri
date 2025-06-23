@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  vehicle-registration-service:
+    build: .
+    ports:
+      - "5012:5012"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/vehicles-db
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"

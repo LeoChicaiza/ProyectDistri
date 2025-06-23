@@ -1,0 +1,133 @@
+name: Deploy MicroservicesD1 to EC2
+
+on:
+  push:
+    branches:
+      - ramaQA
+
+jobs:
+  build_and_push_images:
+    name: Build and Push Docker Images
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push Auth Service
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend/Authentication_and_Users/auth-service
+          file: ./backend/Authentication_and_Users/auth-service/Dockerfile
+          push: true
+          tags: leochicaiza/auth-service:latest
+
+      - name: Build and push Access Control Service
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend/Authentication_and_Users/access-control-service
+          file: ./backend/Authentication_and_Users/access-control-service/Dockerfile
+          push: true
+          tags: leochicaiza/access-control-service:latest
+
+      - name: Build and push Active Sessions Service
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend/Authentication_and_Users/active-sessions-service
+          file: ./backend/Authentication_and_Users/active-sessions-service/Dockerfile
+          push: true
+          tags: leochicaiza/active-sessions-service:latest
+
+      - name: Build and push login-audit-service
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend/Authentication_and_Users/login-audit-service
+          file: ./backend/Authentication_and_Users/login-audit-service/Dockerfile
+          push: true
+          tags: leochicaiza/login-audit-service:latest
+
+      - name: Build and push recovery-service
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend/Authentication_and_Users/recovery-service
+          file: ./backend/Authentication_and_Users/recovery-service/Dockerfile
+          push: true
+          tags: leochicaiza/recovery-service:latest
+
+      - name: Build and push user-management-service
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend/Authentication_and_Users/user-management-service
+          file: ./backend/Authentication_and_Users/user-management-service/Dockerfile
+          push: true
+          tags: leochicaiza/user-management-service:latest
+
+  deploy_to_ec2:
+    name: Deploy Docker Containers to EC2
+    runs-on: ubuntu-latest
+    needs: build_and_push_images
+    steps:
+      - name: Set up SSH key
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.EC2_KEY }}
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ec2-user
+          key: ${{ secrets.EC2_KEY }}
+          port: 22
+          script: |
+            # Instalar Docker si no existe
+            if ! command -v docker &> /dev/null; then
+              sudo yum update -y
+              sudo amazon-linux-extras install docker -y
+              sudo service docker start
+              sudo usermod -a -G docker ec2-user
+            fi
+
+            # Parar y eliminar contenedores anteriores
+            sudo docker stop auth-service || true
+            sudo docker rm auth-service || true
+            sudo docker stop access-control-service || true
+            sudo docker rm access-control-service || true
+            sudo docker stop active-sessions-service || true
+            sudo docker rm active-sessions-service || true
+
+            sudo docker stop login-audit-service || true
+            sudo docker rm login-audit-service || true
+            sudo docker stop recovery-service || true
+            sudo docker rm recovery-service || true
+            sudo docker stop user-management-service || true
+            sudo docker rm user-management-service || true
+
+
+            # Limpiar imágenes
+            sudo docker system prune -f
+
+            # Pull e iniciar nuevos contenedores
+            sudo docker pull leochicaiza/auth-service:latest
+            sudo docker pull leochicaiza/access-control-service:latest
+            sudo docker pull leochicaiza/active-sessions-service:latest
+
+            sudo docker pull leochicaiza/login-audit-service:latest
+            sudo docker pull leochicaiza/recovery-service:latest
+            sudo docker pull leochicaiza/user-management-service:latest
+
+            sudo docker run -d --name auth-service -p 8001:8001 leochicaiza/auth-service:latest
+            sudo docker run -d --name access-control-service -p 8002:8002 leochicaiza/access-control-service:latest
+            sudo docker run -d --name active-sessions-service -p 8003:8003 leochicaiza/active-sessions-service:latest
+
+            sudo docker run -d --name login-audit-service -p 5000:5000 leochicaiza/login-audit-service:latest
+            sudo docker run -d --name recovery-service -p 8005:8005 leochicaiza/recovery-service:latest
+            sudo docker run -d --name user-management-service -p 8006:8006 leochicaiza/user-management-service:latest

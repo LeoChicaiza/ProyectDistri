@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  slot-maintenance-service:
+    build: .
+    ports:
+      - "5011:5011"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/maintenance-db
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
