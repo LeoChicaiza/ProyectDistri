@@ -1,4 +1,4 @@
-name: Deploy MicroservicesD1 to EC2
+name: Deploy Microservices to EC2
 
 on:
   push:
