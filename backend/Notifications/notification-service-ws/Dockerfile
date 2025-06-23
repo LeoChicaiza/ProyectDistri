@@ -1,9 +1,14 @@
+FROM rust:1.73 as builder
 
-FROM python:3.9-slim
+WORKDIR /usr/src/app
+COPY . .
+RUN cargo build --release
 
+FROM debian:buster-slim
 WORKDIR /app
-COPY . /app
+COPY --from=builder /usr/src/app/target/release/notification-service-ws .
 
-RUN pip install --no-cache-dir -r requirements.txt
+ENV PORT=8026
+EXPOSE 8026
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8027"]
+CMD ["./notification-service-ws"]
