@@ -72,8 +72,9 @@ jobs:
           key: ${{ secrets.EC2_KEY }}
           port: 22
           script: |
+
             # Instalar Docker si no existe
-            if ! command -v docker &> /dev/null; then
+            if ! command -v docker &>/dev/null; then
               sudo yum update -y
               sudo amazon-linux-extras install docker -y
               sudo service docker start

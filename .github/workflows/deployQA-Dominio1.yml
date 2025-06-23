@@ -90,9 +90,12 @@ jobs:
           script: |
           
             # Instalar Docker si no existe
-            sudo apt update && sudo apt install -y docker.io
-            sudo systemctl start docker
-            sudo usermod -aG docker ec2-user
+            if ! command -v docker &>/dev/null; then
+              sudo yum update -y
+              sudo amazon-linux-extras install docker -y
+              sudo service docker start
+              sudo usermod -a -G docker ec2-user
+            fi
 
 
             # Parar y eliminar contenedores anteriores
