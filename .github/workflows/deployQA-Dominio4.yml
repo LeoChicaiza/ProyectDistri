@@ -75,10 +75,30 @@ jobs:
 
             # Instalar Docker si no existe
             if ! command -v docker &>/dev/null; then
-              sudo yum update -y
-              sudo amazon-linux-extras install docker -y
-              sudo service docker start
-              sudo usermod -a -G docker ec2-user
+              echo "Instalando Docker..."
+
+              if command -v apt-get &>/dev/null; then
+                # Ubuntu / Debian
+                sudo apt-get update -y
+                sudo apt-get install -y docker.io
+                sudo systemctl enable --now docker
+
+              elif command -v dnf &>/dev/null; then
+                # Amazon Linux 2023 / RHEL 9 / Fedora
+                sudo dnf install -y docker
+                sudo systemctl enable --now docker
+
+              elif command -v yum &>/dev/null; then
+                # Amazon Linux 2 / RHEL 7-8 / CentOS
+                sudo yum install -y docker
+                sudo systemctl enable --now docker    # ó: sudo service docker start
+
+              else
+                echo "❌ No se pudo detectar un gestor de paquetes compatible."
+                exit 1
+              fi
+
+              sudo usermod -aG docker ec2-user
             fi
 
             # Parar y eliminar contenedores anteriores
