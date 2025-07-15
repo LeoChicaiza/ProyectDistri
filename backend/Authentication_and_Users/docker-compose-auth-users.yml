@@ -2,6 +2,7 @@ services:
   auth_users_db:
     image: postgres:14
     container_name: auth_users_db
+    restart: always
     environment:
       POSTGRES_DB: auth_and_users_db
       POSTGRES_USER: postgres
@@ -14,7 +15,10 @@ services:
       - auth_net
 
   access-control-service:
-    image: leochicaiza/access-control-service:latest
+    build:
+      context: ./access-control-service
+      dockerfile: Dockerfile
+    container_name: access-control-service
     depends_on:
       - auth_users_db
     environment:
@@ -29,7 +33,10 @@ services:
       - auth_net
 
   active-sessions-service:
-    image: leochicaiza/active-sessions-service:latest
+    build:
+      context: ./active-sessions-service
+      dockerfile: Dockerfile
+    container_name: active-sessions-service
     depends_on:
       - auth_users_db
     environment:
@@ -44,7 +51,10 @@ services:
       - auth_net
 
   auth-service:
-    image: leochicaiza/auth-service:latest
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile
+    container_name: auth-service
     depends_on:
       - auth_users_db
     environment:
@@ -53,13 +63,17 @@ services:
       DB_USER: postgres
       DB_PASSWORD: 12345
       DB_PORT: 5432
+      JWT_SECRET: secreto123
     ports:
       - "8001:8001"
     networks:
       - auth_net
 
   login-audit-service:
-    image: leochicaiza/login-audit-service:latest
+    build:
+      context: ./login-audit-service    
+      dockerfile: Dockerfile
+    image: login-audit-service:latest
     depends_on:
       - auth_users_db
     environment:
@@ -74,7 +88,10 @@ services:
       - auth_net
 
   recovery-service:
-    image: leochicaiza/recovery-service:latest
+    build:
+      context: ./recovery-service
+      dockerfile: Dockerfile
+    container_name: recovery-service
     depends_on:
       - auth_users_db
     environment:
@@ -89,7 +106,10 @@ services:
       - auth_net
 
   user-management-service:
-    image: leochicaiza/user-management-service:latest
+    build:
+      context: ./user-management-service
+      dockerfile: Dockerfile
+    container_name: user-management-service
     depends_on:
       - auth_users_db
     environment:
@@ -98,6 +118,7 @@ services:
       DB_USER: postgres
       DB_PASSWORD: 12345
       DB_PORT: 5432
+      JWT_SECRET: secreto123
     ports:
       - "8006:8006"
     networks:

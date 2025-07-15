@@ -1,0 +1,8 @@
+C:\Users\A QualityLaptops\Desktop\ProyectoDistribuida\backend\Authentication_and_Users\login-audit-service\obj\Debug\net6.0\login-audit-service.csproj.AssemblyReference.cache
+C:\Users\A QualityLaptops\Desktop\ProyectoDistribuida\backend\Authentication_and_Users\login-audit-service\obj\Debug\net6.0\rpswa.dswa.cache.json
+C:\Users\A QualityLaptops\Desktop\ProyectoDistribuida\backend\Authentication_and_Users\login-audit-service\obj\Debug\net6.0\login-audit-service.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\A QualityLaptops\Desktop\ProyectoDistribuida\backend\Authentication_and_Users\login-audit-service\obj\Debug\net6.0\login-audit-service.AssemblyInfoInputs.cache
+C:\Users\A QualityLaptops\Desktop\ProyectoDistribuida\backend\Authentication_and_Users\login-audit-service\obj\Debug\net6.0\login-audit-service.AssemblyInfo.cs
+C:\Users\A QualityLaptops\Desktop\ProyectoDistribuida\backend\Authentication_and_Users\login-audit-service\obj\Debug\net6.0\login-audit-service.csproj.CoreCompileInputs.cache
+C:\Users\A QualityLaptops\Desktop\ProyectoDistribuida\backend\Authentication_and_Users\login-audit-service\obj\Debug\net6.0\login-audit-service.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\A QualityLaptops\Desktop\ProyectoDistribuida\backend\Authentication_and_Users\login-audit-service\obj\Debug\net6.0\login-audit-service.sourcelink.json

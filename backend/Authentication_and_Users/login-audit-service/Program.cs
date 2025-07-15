@@ -25,7 +25,12 @@ var app = builder.Build();
 app.UseRouting();
 app.MapControllers();
 
+
+
 app.Run();
+
+public partial class Program { }  
+
 
 
 

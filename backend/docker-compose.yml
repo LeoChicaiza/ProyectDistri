@@ -1,0 +1,210 @@
+version: "3.8"
+
+services:
+  # --- Auth & Users Domain ---
+  auth_users_db:
+    image: postgres:14
+    environment:
+      POSTGRES_DB: auth_and_users_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 12345
+    volumes:
+      - auth_users_data:/var/lib/postgresql/data
+    networks:
+      - backend-net
+
+  auth-service:
+    image: leochicaiza/auth-service:latest
+    depends_on:
+      - auth_users_db
+    environment:
+      DB_HOST: auth_users_db
+      DB_NAME: auth_and_users_db
+      DB_USER: postgres
+      DB_PASSWORD: 12345
+    ports:
+      - "8001:8001"
+    networks:
+      - backend-net
+
+  access-control-service:
+    image: leochicaiza/access-control-service:latest
+    depends_on:
+      - auth_users_db
+    environment:
+      DB_HOST: auth_users_db
+      DB_NAME: auth_and_users_db
+      DB_USER: postgres
+      DB_PASSWORD: 12345
+    ports:
+      - "8002:8002"
+    networks:
+      - backend-net
+
+  active-sessions-service:
+    image: leochicaiza/active-sessions-service:latest
+    depends_on:
+      - auth_users_db
+    environment:
+      DB_HOST: auth_users_db
+      DB_NAME: auth_and_users_db
+      DB_USER: postgres
+      DB_PASSWORD: 12345
+    ports:
+      - "8003:8003"
+    networks:
+      - backend-net
+
+  login-audit-service:
+    image: leochicaiza/login-audit-service:latest
+    depends_on:
+      - auth_users_db
+    ports:
+      - "5000:5000"
+    networks:
+      - backend-net
+
+  recovery-service:
+    image: leochicaiza/recovery-service:latest
+    depends_on:
+      - auth_users_db
+    ports:
+      - "8005:8005"
+    networks:
+      - backend-net
+
+  user-management-service:
+    image: leochicaiza/user-management-service:latest
+    depends_on:
+      - auth_users_db
+    ports:
+      - "8006:8006"
+    networks:
+      - backend-net
+
+  # --- Parking Management Domain ---
+  parking_db:
+    image: postgres:14
+    environment:
+      POSTGRES_DB: parking_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 12345
+    volumes:
+      - parking_data:/var/lib/postgresql/data
+    networks:
+      - backend-net
+
+  availability-service:
+    image: leochicaiza/availability-service:latest
+    depends_on:
+      - parking_db
+    environment:
+      DB_HOST: parking_db
+      DB_NAME: parking_db
+      DB_USER: postgres
+      DB_PASSWORD: 12345
+    ports:
+      - "8007:8007"
+    networks:
+      - backend-net
+
+  levels-floors-service:
+    image: leochicaiza/levels-floors-service:latest
+    depends_on:
+      - parking_db
+    environment:
+      DB_HOST: parking_db
+      DB_NAME: parking_db
+      DB_USER: postgres
+      DB_PASSWORD: 12345
+    ports:
+      - "8008:8008"
+    networks:
+      - backend-net
+
+  zones-service:
+    image: leochicaiza/zones-service:latest
+    depends_on:
+      - parking_db
+    environment:
+      DB_HOST: parking_db
+      DB_NAME: parking_db
+      DB_USER: postgres
+      DB_PASSWORD: 12345
+    ports:
+      - "8012:8012"
+    networks:
+      - backend-net
+
+  parking-slots-service:
+    image: leochicaiza/parking-slots-service:latest
+    depends_on:
+      - parking_db
+    environment:
+      DB_HOST: parking_db
+      DB_NAME: parking_db
+      DB_USER: postgres
+      DB_PASSWORD: 12345
+    ports:
+      - "8010:8010"
+    networks:
+      - backend-net
+
+  slot-maintenance-service:
+    image: leochicaiza/slot-maintenance-service:latest
+    depends_on:
+      - parking_db
+    environment:
+      DB_HOST: parking_db
+      DB_NAME: parking_db
+      DB_USER: postgres
+      DB_PASSWORD: 12345
+    ports:
+      - "8011:8011"
+    networks:
+      - backend-net
+
+  parking-lot-creation-service:
+    image: leochicaiza/parking-lot-creation-service:latest
+    depends_on:
+      - parking_db
+    environment:
+      DB_HOST: parking_db
+      DB_NAME: parking_db
+      DB_USER: postgres
+      DB_PASSWORD: 12345
+    ports:
+      - "8009:8009"
+    networks:
+      - backend-net
+
+  # --- API Gateway ---
+  api-gateway:
+    image: nginx-gateway:latest
+    build:
+      context: ./api-gateway-nginx
+    ports:
+      - "8000:8000"
+    depends_on:
+      - auth-service
+      - access-control-service
+      - active-sessions-service
+      - login-audit-service
+      - recovery-service
+      - user-management-service
+      - availability-service
+      - levels-floors-service
+      - zones-service
+      - parking-slots-service
+      - slot-maintenance-service
+      - parking-lot-creation-service
+    networks:
+      - backend-net
+
+volumes:
+  auth_users_data:
+  parking_data:
+
+networks:
+  backend-net:
+    driver: bridge

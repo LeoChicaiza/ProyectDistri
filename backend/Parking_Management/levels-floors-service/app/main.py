@@ -7,3 +7,7 @@ app = FastAPI()
 
 
 app.include_router(levels.router, prefix="/levels", tags=["Levels and Floors"])
+
+@app.get("/health", tags=["Health"])
+def health():
+    return {"status": "ok"}

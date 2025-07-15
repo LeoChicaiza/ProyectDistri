@@ -1,0 +1,53 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "login-audit-service", "login-audit-service.csproj", "{161703CB-B76A-4D6F-A9A4-AD61671F9D98}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0AB3BF05-4346-4AA6-1389-037BE0695223}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoginAuditService.Tests", "tests\LoginAuditService.Tests\LoginAuditService.Tests.csproj", "{BCB6B34E-6735-4A90-AA9C-155E3359DA25}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{161703CB-B76A-4D6F-A9A4-AD61671F9D98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{161703CB-B76A-4D6F-A9A4-AD61671F9D98}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{161703CB-B76A-4D6F-A9A4-AD61671F9D98}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{161703CB-B76A-4D6F-A9A4-AD61671F9D98}.Debug|x64.Build.0 = Debug|Any CPU
+		{161703CB-B76A-4D6F-A9A4-AD61671F9D98}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{161703CB-B76A-4D6F-A9A4-AD61671F9D98}.Debug|x86.Build.0 = Debug|Any CPU
+		{161703CB-B76A-4D6F-A9A4-AD61671F9D98}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{161703CB-B76A-4D6F-A9A4-AD61671F9D98}.Release|Any CPU.Build.0 = Release|Any CPU
+		{161703CB-B76A-4D6F-A9A4-AD61671F9D98}.Release|x64.ActiveCfg = Release|Any CPU
+		{161703CB-B76A-4D6F-A9A4-AD61671F9D98}.Release|x64.Build.0 = Release|Any CPU
+		{161703CB-B76A-4D6F-A9A4-AD61671F9D98}.Release|x86.ActiveCfg = Release|Any CPU
+		{161703CB-B76A-4D6F-A9A4-AD61671F9D98}.Release|x86.Build.0 = Release|Any CPU
+		{BCB6B34E-6735-4A90-AA9C-155E3359DA25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCB6B34E-6735-4A90-AA9C-155E3359DA25}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BCB6B34E-6735-4A90-AA9C-155E3359DA25}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{BCB6B34E-6735-4A90-AA9C-155E3359DA25}.Debug|x64.Build.0 = Debug|Any CPU
+		{BCB6B34E-6735-4A90-AA9C-155E3359DA25}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BCB6B34E-6735-4A90-AA9C-155E3359DA25}.Debug|x86.Build.0 = Debug|Any CPU
+		{BCB6B34E-6735-4A90-AA9C-155E3359DA25}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BCB6B34E-6735-4A90-AA9C-155E3359DA25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BCB6B34E-6735-4A90-AA9C-155E3359DA25}.Release|x64.ActiveCfg = Release|Any CPU
+		{BCB6B34E-6735-4A90-AA9C-155E3359DA25}.Release|x64.Build.0 = Release|Any CPU
+		{BCB6B34E-6735-4A90-AA9C-155E3359DA25}.Release|x86.ActiveCfg = Release|Any CPU
+		{BCB6B34E-6735-4A90-AA9C-155E3359DA25}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{BCB6B34E-6735-4A90-AA9C-155E3359DA25} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
+	EndGlobalSection
+EndGlobal

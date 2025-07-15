@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("login-audit-service")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f4e63ed4704b3249ac3d4b2cdf175e4e3ef8c1c2")]
 [assembly: System.Reflection.AssemblyProductAttribute("login-audit-service")]
 [assembly: System.Reflection.AssemblyTitleAttribute("login-audit-service")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
