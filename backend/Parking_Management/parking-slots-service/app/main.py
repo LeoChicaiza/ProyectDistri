@@ -8,3 +8,7 @@ app = FastAPI()
 
 
 app.include_router(slots.router, prefix="/slots", tags=["Parking Slots"])
+
+@app.get("/health", tags=["Health"])
+def health():
+    return {"status": "ok"}

@@ -1,18 +1,17 @@
-version: "3.8"
-
 services:
   parking-db:
-    image: postgres:15
-    container_name: parking-management-db
+    image: mysql:8.0
+    container_name: parking-mysql
     restart: always
     environment:
-      POSTGRES_DB: parking_management_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 12345
+      MYSQL_DATABASE: parking_management_db
+      MYSQL_ROOT_PASSWORD: proot123
+      MYSQL_USER: uroot
+      MYSQL_PASSWORD: proot123
     ports:
-      - "5434:5432"
+      - "3306:3306"
     volumes:
-      - parking_db_data:/var/lib/postgresql/data
+      - parking_mysql_data:/var/lib/mysql
     networks:
       - parking-net
 
@@ -24,13 +23,13 @@ services:
     depends_on:
       - parking-db
     environment:
+      DB_HOST: parking-mysql
+      DB_PORT: 3306
       DB_NAME: parking_management_db
-      DB_USER: postgres
-      DB_PASSWORD: 12345
-      DB_HOST: parking-db
-      DB_PORT: 5432
+      DB_USER: uroot
+      DB_PASSWORD: proot123
     ports:
-      - "8020:8020"
+      - "8007:8007"
     networks:
       - parking-net
 
@@ -42,13 +41,13 @@ services:
     depends_on:
       - parking-db
     environment:
+      DB_HOST: parking-mysql
+      DB_PORT: 3306
       DB_NAME: parking_management_db
-      DB_USER: postgres
-      DB_PASSWORD: 12345
-      DB_HOST: parking-db
-      DB_PORT: 5432
+      DB_USER: uroot
+      DB_PASSWORD: proot123
     ports:
-      - "8021:8021"
+      - "8008:8008"
     networks:
       - parking-net
 
@@ -60,13 +59,13 @@ services:
     depends_on:
       - parking-db
     environment:
+      DB_HOST: parking-mysql
+      DB_PORT: 3306
       DB_NAME: parking_management_db
-      DB_USER: postgres
-      DB_PASSWORD: 12345
-      DB_HOST: parking-db
-      DB_PORT: 5432
+      DB_USER: uroot
+      DB_PASSWORD: proot123
     ports:
-      - "8022:8022"
+      - "8009:8009"
     networks:
       - parking-net
 
@@ -78,13 +77,13 @@ services:
     depends_on:
       - parking-db
     environment:
+      DB_HOST: parking-mysql
+      DB_PORT: 3306
       DB_NAME: parking_management_db
-      DB_USER: postgres
-      DB_PASSWORD: 12345
-      DB_HOST: parking-db
-      DB_PORT: 5432
+      DB_USER: uroot
+      DB_PASSWORD: proot123
     ports:
-      - "8023:8023"
+      - "8010:8010"
     networks:
       - parking-net
 
@@ -96,13 +95,13 @@ services:
     depends_on:
       - parking-db
     environment:
+      DB_HOST: parking-mysql
+      DB_PORT: 3306
       DB_NAME: parking_management_db
-      DB_USER: postgres
-      DB_PASSWORD: 12345
-      DB_HOST: parking-db
-      DB_PORT: 5432
+      DB_USER: uroot
+      DB_PASSWORD: proot123
     ports:
-      - "8024:8024"
+      - "8011:8011"
     networks:
       - parking-net
 
@@ -114,18 +113,20 @@ services:
     depends_on:
       - parking-db
     environment:
+      DB_HOST: parking-mysql
+      DB_PORT: 3306
       DB_NAME: parking_management_db
-      DB_USER: postgres
-      DB_PASSWORD: 12345
-      DB_HOST: parking-db
-      DB_PORT: 5432
+      DB_USER: uroot
+      DB_PASSWORD: proot123
     ports:
-      - "8025:8025"
+      - "8012:8012"
     networks:
       - parking-net
 
 volumes:
-  parking_db_data:
+  parking_mysql_data:
 
 networks:
   parking-net:
+    driver: bridge
+

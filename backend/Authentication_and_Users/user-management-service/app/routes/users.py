@@ -3,8 +3,17 @@ from uuid import uuid4
 from datetime import datetime
 from app.schemas.user import UserProfileCreate, UserProfileResponse
 from app.database.db import get_connection
+import uuid
+
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+
+from fastapi import Depends
+from app.routes.users import get_current_user  
+         
+
 
 router = APIRouter()
+security = HTTPBearer()
 
 @router.post("/create", response_model=UserProfileResponse)
 def create_profile(profile: UserProfileCreate):
@@ -60,4 +69,32 @@ def get_profile(user_id: str):
         cur.close()
         conn.close()
 
+# cambio aqui
+@router.get("/me", response_model=UserProfileResponse)
+def get_my_profile(
+    creds: HTTPAuthorizationCredentials = Depends(security)
+):
+    """
+    /users/me -> devuelve el perfil del usuario identificado
+    en el token JWT que trae en Authorization: Bearer <token>
+    """
+    token = creds.credentials
+    try:
 
+        from jose import jwt, JWTError
+        import os
+
+        # decodifica con tu JWT_SECRET (igual que en auth-service)
+        payload = jwt.decode(
+            token,
+            os.getenv("JWT_SECRET", "secreto123"),
+            algorithms=["HS256"]
+        )
+        user_id = payload.get("user_id") or payload.get("usuario_id")  # según cómo lo hayas nombrado
+        if not user_id:
+            raise HTTPException(status_code=401, detail="Token inválido")
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Token inválido o expirado")
+
+    # Reusa tu endpoint existente de get_profile
+    return get_profile(user_id)

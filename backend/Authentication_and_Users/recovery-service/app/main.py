@@ -5,9 +5,9 @@ from app.database import db
 
 app = FastAPI()
 
-@app.on_event("startup")
-def startup():
-    connection = db.get_connection()
-    connection.close() 
-    
+
 app.include_router(recovery.router, prefix="/recovery", tags=["Password Recovery"])
+
+@app.get("/health", tags=["health"])
+async def health():
+    return {"status": "ok"}

@@ -12,3 +12,7 @@ def startup():
 
 
 app.include_router(access.router, prefix="/access", tags=["Access Control"])
+
+@app.get("/health", tags=["health"])
+async def health():
+    return {"status": "ok"}

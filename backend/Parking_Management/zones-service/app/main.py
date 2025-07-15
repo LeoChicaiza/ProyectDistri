@@ -8,3 +8,7 @@ app = FastAPI()
 
 
 app.include_router(zones.router, prefix="/zones", tags=["Zones"])
+
+@app.get("/health", tags=["Health"])
+def health():
+    return {"status": "ok"}

@@ -1,0 +1,15 @@
+C:\Users\A QualityLaptops\Desktop\ProyectoDistribuida\backend\Authentication_and_Users\login-audit-service\HealthCheckClient\bin\Debug\net9.0\HealthCheckClient.exe
+C:\Users\A QualityLaptops\Desktop\ProyectoDistribuida\backend\Authentication_and_Users\login-audit-service\HealthCheckClient\bin\Debug\net9.0\HealthCheckClient.deps.json
+C:\Users\A QualityLaptops\Desktop\ProyectoDistribuida\backend\Authentication_and_Users\login-audit-service\HealthCheckClient\bin\Debug\net9.0\HealthCheckClient.runtimeconfig.json
+C:\Users\A QualityLaptops\Desktop\ProyectoDistribuida\backend\Authentication_and_Users\login-audit-service\HealthCheckClient\bin\Debug\net9.0\HealthCheckClient.dll
+C:\Users\A QualityLaptops\Desktop\ProyectoDistribuida\backend\Authentication_and_Users\login-audit-service\HealthCheckClient\bin\Debug\net9.0\HealthCheckClient.pdb
+C:\Users\A QualityLaptops\Desktop\ProyectoDistribuida\backend\Authentication_and_Users\login-audit-service\HealthCheckClient\obj\Debug\net9.0\HealthCheckClient.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\A QualityLaptops\Desktop\ProyectoDistribuida\backend\Authentication_and_Users\login-audit-service\HealthCheckClient\obj\Debug\net9.0\HealthCheckClient.AssemblyInfoInputs.cache
+C:\Users\A QualityLaptops\Desktop\ProyectoDistribuida\backend\Authentication_and_Users\login-audit-service\HealthCheckClient\obj\Debug\net9.0\HealthCheckClient.AssemblyInfo.cs
+C:\Users\A QualityLaptops\Desktop\ProyectoDistribuida\backend\Authentication_and_Users\login-audit-service\HealthCheckClient\obj\Debug\net9.0\HealthCheckClient.csproj.CoreCompileInputs.cache
+C:\Users\A QualityLaptops\Desktop\ProyectoDistribuida\backend\Authentication_and_Users\login-audit-service\HealthCheckClient\obj\Debug\net9.0\HealthCheckClient.sourcelink.json
+C:\Users\A QualityLaptops\Desktop\ProyectoDistribuida\backend\Authentication_and_Users\login-audit-service\HealthCheckClient\obj\Debug\net9.0\HealthCheckClient.dll
+C:\Users\A QualityLaptops\Desktop\ProyectoDistribuida\backend\Authentication_and_Users\login-audit-service\HealthCheckClient\obj\Debug\net9.0\refint\HealthCheckClient.dll
+C:\Users\A QualityLaptops\Desktop\ProyectoDistribuida\backend\Authentication_and_Users\login-audit-service\HealthCheckClient\obj\Debug\net9.0\HealthCheckClient.pdb
+C:\Users\A QualityLaptops\Desktop\ProyectoDistribuida\backend\Authentication_and_Users\login-audit-service\HealthCheckClient\obj\Debug\net9.0\HealthCheckClient.genruntimeconfig.cache
+C:\Users\A QualityLaptops\Desktop\ProyectoDistribuida\backend\Authentication_and_Users\login-audit-service\HealthCheckClient\obj\Debug\net9.0\ref\HealthCheckClient.dll

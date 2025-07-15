@@ -6,3 +6,7 @@ from app.database import db
 app = FastAPI()
 
 app.include_router(availability.router, prefix="/availability", tags=["Availability"])
+
+@app.get("/health", tags=["Health"])
+def health():
+    return {"status": "ok"}

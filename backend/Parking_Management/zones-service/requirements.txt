@@ -1,3 +1,10 @@
 fastapi
 uvicorn
+pyjwt
+python-jose
+pydantic
+mysql-connector-python
+pytest
+bcrypt
+httpx
 psycopg2-binary
